@@ -1,0 +1,103 @@
+#include <stdio.h>
+#include <string.h>
+#define MAX 100 
+
+typedef struct {
+    char name[50];
+    char contact[15];
+    int age;
+    int waitingNo;
+} Patient;
+
+typedef struct {
+    Patient queue[MAX];
+    int front, rear;
+} WaitingList;
+
+
+void initializeQueue(WaitingList *wl) {
+    wl->front = -1;
+    wl->rear = -1;
+}
+
+
+int isFull(WaitingList *wl) {
+    return (wl->rear == MAX - 1);
+}
+
+
+int isEmpty(WaitingList *wl) {
+    return (wl->front == -1 || wl->front > wl->rear);
+}
+
+
+void enqueue(WaitingList *wl, char name[], char contact[], int age) {
+    if (isFull(wl)) {
+        printf("Waiting list is full! Cannot add more patients.\n");
+        return;
+    }
+
+    if (isEmpty(wl)) {
+        wl->front = 0; 
+    }
+
+    wl->rear++;
+    strcpy(wl->queue[wl->rear].name, name);
+    strcpy(wl->queue[wl->rear].contact, contact);
+    wl->queue[wl->rear].age = age;
+    wl->queue[wl->rear].waitingNo = wl->rear + 1; 
+
+    printf("Added Patient: %s, Contact: %s, Age: %d, Waiting No: %d\n", 
+           name, contact, age, wl->queue[wl->rear].waitingNo);
+}
+
+
+void dequeue(WaitingList *wl) {
+    if (isEmpty(wl)) {
+        printf("Waiting list is empty! No patients to remove.\n");
+        return;
+    }
+
+    printf("Removed Patient: %s, Contact: %s, Age: %d, Waiting No: %d\n", 
+           wl->queue[wl->front].name, wl->queue[wl->front].contact, 
+           wl->queue[wl->front].age, wl->queue[wl->front].waitingNo);
+
+    wl->front++;
+}
+
+
+void displayQueue(WaitingList *wl) {
+    if (isEmpty(wl)) {
+        printf("Waiting list is empty.\n");
+        return;
+    }
+
+    printf("Current Waiting List:\n");
+    for (int i = wl->front; i <= wl->rear; i++) {
+        printf("Name: %s, Contact: %s, Age: %d, Waiting No: %d\n", 
+               wl->queue[i].name, wl->queue[i].contact, 
+               wl->queue[i].age, wl->queue[i].waitingNo);
+    }
+}
+
+int main() {
+    WaitingList wl;
+    initializeQueue(&wl);
+
+    enqueue(&wl, "manu", "1234567890", 45);
+    enqueue(&wl, "varadh", "0987654321", 38);
+    enqueue(&wl, "Ajay", "1122334455", 29);
+
+    displayQueue(&wl);
+
+    dequeue(&wl);
+    dequeue(&wl);
+
+    displayQueue(&wl);
+
+    enqueue(&wl, "Bheeeemrao", "2233445566", 60);
+
+    displayQueue(&wl);
+
+    return 0;
+}

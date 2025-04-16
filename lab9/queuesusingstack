@@ -1,0 +1,111 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX 100
+
+// Structure for stack
+struct Stack {
+    int items[MAX];
+    int top;
+};
+
+// Structure for queue
+struct Queue {
+    struct Stack *stack1; // For enqueue
+    struct Stack *stack2; // For dequeue
+};
+
+// Initialize stack
+void initStack(struct Stack *s) {
+    s->top = -1;
+}
+
+// Check if stack is empty
+int isEmpty(struct Stack *s) {
+    return s->top == -1;
+}
+
+// Check if stack is full
+int isFull(struct Stack *s) {
+    return s->top == MAX - 1;
+}
+
+// Push operation
+void push(struct Stack *s, int value) {
+    if (isFull(s)) {
+        printf("Stack overflow!\n");
+        return;
+    }
+    s->items[++s->top] = value;
+}
+
+// Pop operation
+int pop(struct Stack *s) {
+    if (isEmpty(s)) {
+        printf("Stack underflow!\n");
+        return -1;
+    }
+    return s->items[s->top--];
+}
+
+// Initialize queue
+struct Queue* createQueue() {
+    struct Queue* q = (struct Queue*)malloc(sizeof(struct Queue));
+    q->stack1 = (struct Stack*)malloc(sizeof(struct Stack));
+    q->stack2 = (struct Stack*)malloc(sizeof(struct Stack));
+    initStack(q->stack1);
+    initStack(q->stack2);
+    return q;
+}
+
+// Enqueue operation
+void enqueue(struct Queue *q, int value) {
+    push(q->stack1, value);
+    printf("%d enqueued to queue\n", value);
+}
+
+// Dequeue operation
+int dequeue(struct Queue *q) {
+    int value;
+    
+    // If both stacks are empty
+    if (isEmpty(q->stack1) && isEmpty(q->stack2)) {
+        printf("Queue is empty!\n");
+        return -1;
+    }
+    
+    // If stack2 is empty, transfer elements from stack1
+    if (isEmpty(q->stack2)) {
+        while (!isEmpty(q->stack1)) {
+            value = pop(q->stack1);
+            push(q->stack2, value);
+        }
+    }
+    
+    // Pop from stack2 (which now has elements in FIFO order)
+    value = pop(q->stack2);
+    printf("%d dequeued from queue\n", value);
+    return value;
+}
+
+int main() {
+    struct Queue *q = createQueue();
+    
+    // Test the queue operations
+    enqueue(q, 1);
+    enqueue(q, 2);
+    enqueue(q, 3);
+    
+    dequeue(q);
+    dequeue(q);
+    
+    enqueue(q, 4);
+    
+    dequeue(q);
+    dequeue(q);
+    
+    free(q->stack1);
+    free(q->stack2);
+    free(q);
+    
+    return 0;
+}
