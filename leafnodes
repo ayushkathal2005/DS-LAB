@@ -1,0 +1,83 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* left;
+    struct Node* right;
+};
+
+
+struct Node* createNode(int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = value;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+
+struct Node* insertNode(struct Node* root, int value) {
+    if (root == NULL) {
+        return createNode(value);
+    }
+    
+    if (value < root->data) {
+        root->left = insertNode(root->left, value);
+    }
+    else if (value > root->data) {
+        root->right = insertNode(root->right, value);
+    }
+    
+    return root;
+}
+
+
+int countLeafNodes(struct Node* root) {
+   
+    if (root == NULL) {
+        return 0;
+    }
+    
+  
+    if (root->left == NULL && root->right == NULL) {
+        return 1;
+    }
+    
+    
+    return countLeafNodes(root->left) + countLeafNodes(root->right);
+}
+
+
+int countInternalNodes(struct Node* root) {
+   
+    if (root == NULL || (root->left == NULL && root->right == NULL)) {
+        return 0;
+    }
+    
+
+    return 1 + countInternalNodes(root->left) + countInternalNodes(root->right);
+}
+
+int main() {
+    struct Node* root = NULL;
+    
+  
+    root = insertNode(root, 50);
+    insertNode(root, 30);
+    insertNode(root, 20);
+    insertNode(root, 40);
+    insertNode(root, 70);
+    insertNode(root, 60);
+    insertNode(root, 80);
+    
+ 
+    
+    int leafNodes = countLeafNodes(root);
+    int internalNodes = countInternalNodes(root);
+    
+    printf("Number of leaf nodes: %d\n", leafNodes);
+    printf("Number of internal nodes: %d\n", internalNodes);
+    
+    return 0;
+}
