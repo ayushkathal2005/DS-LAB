@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Structure for tree node
+struct Node {
+    int data;
+    struct Node* left;
+    struct Node* right;
+};
+
+// Create a new node
+struct Node* createNode(int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = value;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+// Insert a node into BST
+struct Node* insertNode(struct Node* root, int value) {
+    // If tree is empty, create new node as root
+    if (root == NULL) {
+        return createNode(value);
+    }
+
+    // Recursively insert in appropriate subtree
+    if (value < root->data) {
+        root->left = insertNode(root->left, value);
+    }
+    else if (value > root->data) {
+        root->right = insertNode(root->right, value);
+    }
+
+    return root;
+}
+
+// Inorder traversal (Left-Root-Right)
+void inorderTraversal(struct Node* root) {
+    if (root != NULL) {
+        inorderTraversal(root->left);
+        printf("%d ", root->data);
+        inorderTraversal(root->right);
+    }
+}
+
+// Preorder traversal (Root-Left-Right)
+void preorderTraversal(struct Node* root) {
+    if (root != NULL) {
+        printf("%d ", root->data);
+        preorderTraversal(root->left);
+        preorderTraversal(root->right);
+    }
+}
+
+int main() {
+    struct Node* root = NULL;
+    
+    // Insert nodes
+    root = insertNode(root, 50);
+    insertNode(root, 30);
+    insertNode(root, 20);
+    insertNode(root, 40);
+    insertNode(root, 70);
+    insertNode(root, 60);
+    insertNode(root, 80);
+
+    printf("Inorder traversal: ");
+    inorderTraversal(root);
+    printf("\n");
+
+    printf("Preorder traversal: ");
+    preorderTraversal(root);
+    printf("\n");
+
+    return 0;
+}
+
